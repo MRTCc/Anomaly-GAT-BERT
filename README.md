@@ -1,14 +1,17 @@
-# AnomalyBERT: Transformer-based Anomaly Detector
+# Anomaly-GAT-BERT: Transformer-based Anomaly Detector
 
 This is the code for **Self-supervised Transformer for Time Series Anomaly Detection using Data Degradation Scheme**.
+This code is forked from: [AnomalyBERT](https://github.com/Jhryu30/AnomalyBERT/tree/main)
+
+The architecture is inspired by [AnomalyBERT](https://arxiv.org/abs/2305.04468v1) and [MTAD-GAT](https://arxiv.org/pdf/2009.02040.pdf)
 
 ## Installation
 
-Please clone our repository at `path/to/repository/` and install the packages in `requirements.txt`.
-Before installing the packages, we recommend installing Python 3.8 and Pytorch 1.9 with CUDA.
+Please clone the repository at `path/to/repository/` and install the packages in `requirements.txt`.
+It is recommend installing Python 3.8 and Pytorch 1.9 with CUDA.
 
 ```
-git clone https://github.com/Jhryu30/AnomalyBERT.git path/to/repository/
+git clone https://github.com/MRTCc/Anomaly-GAT-BERT.git
 
 conda create --name your_env_name python=3.8
 conda activate your_env_name
@@ -25,36 +28,49 @@ After preprocessing, you need to edit your dataset directory in `utils/config.py
 DATASET_DIR = 'path/to/dataset/processed/'
 ```
 
-## Demo
-
-We release our trained models on SWaT/WADI/SMAP/MSL. 
-You can download the files from [here](https://drive.google.com/drive/folders/1PhMwdGsSnrQgs16DPgBPngwV6Fvliatd?usp=sharing), and we recommend placing it in `logs/best_checkpoints/` folder.
-Now you can run our demo code in `demo.ipynb` and see how AnomalyBERT works.
-
 
 ## Training
 
-We provide the training code for our model.
-For example, to train a model of 6-layer Transformer body on SMAP dataset, run:
-
+To train with deafault options:
 ```
-python3 train.py --dataset=SMAP --n_layer=6
+python3 train.py --dataset <dataset>
 ```
 
-To train a model on MSL dataset with patch size of 2 and customized outlier synthesis probability, run:
-
+Default training parameters can be found in `train.py`:
 ```
-python3 train.py --dataset=MSL --patch_size=2 --soft_replacing=0.5 --uniform_replacing=0.1 --peak_noising=0.1 \
---length_adjusting=0.1
+--gpu_id=0
+--lr=0.0001
+--max_steps=150000
+--summary_steps=500
+--checkpoint=None
+--initial_iter=0
+--dataset=SMAP
+--replacing_data=None
+--batch_size=16
+--n_features=512
+--patch_size=4
+--d_embed=512
+--n_layer=6
+--dropout=0.1
+--replacing_rate_max=0.15
+--soft_replacing=0.5
+--uniform_replacing=0.15
+--peak_noising=0.15
+--length_adjusting=0.0
+--white_noising=0.0
+--flip_replacing_interval=all
+--replacing_weight=0.7
+--window_sliding=16
+--data_division=None
+--loss=bce
+--total_loss=0.2
+--partial_loss=1.0
+--contrastive_loss=0.0
+--grad_clip_norm=1.0
+--default_options=None
+--alpha=0.2
 ```
 
-You can use the default option for training each dataset, as we did in our paper.
-
-```
-python3 train.py --default_options=SMAP # or any dataset name in MSL/SMD/SWaT/WADI and subset of SMD; SMD0 ~ SMD27
-```
-
-If you want to customize the model and training settings, please check the options in `train.py`.
 
 ## Anomaly score estimation and metric computation
 
