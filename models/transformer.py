@@ -68,9 +68,8 @@ class EncoderLayer(nn.Module):
         out2 = self.norm_layers[1](out1)
         out2 = self.feed_forward_layer(out2)
         return self.dropout_layer(out2) + out1
-    
-    
-    
+
+
 class MultiHeadAttentionLayer(nn.Module):
     def __init__(self, d_embed, n_head, max_seq_len=512, relative_position_embedding=True):
         super(MultiHeadAttentionLayer, self).__init__()
